@@ -1,0 +1,86 @@
+[General]
+
+# Do not quote values when editing this file.
+
+# Set to 1 to tag IPs on a Palo Alto firewall via API
+# Set to 2 to serve the IPs as a text list via HTTP
+# Set to 3 to output the IPs as a text file
+RUN_MODE=2
+
+# TIMEOUT for DoH connection attempts, in seconds
+CHECKS_TIMEOUT=2
+
+# Detected IP lifetime on the firewall or on the list. A discovered DoH server IP will be considered positive for this many seconds. Keep CACHE_AGEOUT lower than the TAG_LIFETIME. Range: 0 (unlimited) to 2592000.
+TAG_LIFETIME=604800
+
+# Don't re-check an IP-SNI combo for this many seconds
+CACHE_AGEOUT=28800
+
+# DNS A query to send to DoH servers, pick something stable that only returns 1 A record
+REFERENCE_DOMAIN=example.com
+
+# Zeek ssl.log file location, this changes based on your Zeek topology
+ZEEK_LOG_PATH=/usr/local/zeek/bin/ssl.log
+
+# Maximum simultaneous cURL calls
+MAX_THREADS=10
+
+# Maximum IP entries in cache, this will use about 1GB ram per 1 million entries
+MAX_KEYS=1000000
+
+# Set to 1 to avoid checking unknown IPs when the cache is full
+FAIL_OPEN=1
+
+# Don't check IPs that match these filters (list CIDR networks separated by commas, ex. 192.0.2.0/24,198.51.100.0/24). Addresses are first INCLUDED (an empty filter meaning any address), then EXCLUDED (an empty filter meaning no addresses).
+
+IPV4_INCLUDE=
+
+IPV4_EXCLUDE=0.0.0.0/8,192.168.0.0/16,172.16.0.0/12,10.0.0.0/8,224.0.0.0/3
+
+IPV6_INCLUDE=2000::/3
+
+# Add your GUA prefixes here
+IPV6_EXCLUDE=
+
+
+[Run Mode 1]
+
+# Maximum calls per second to the firewall API
+MAX_API=5
+
+# Dynamic IP Tag, without quotes
+FW_TAG=doh_detected
+
+# Palo Alto IP
+FW_IP=
+
+# Palo Alto API Key
+API_KEY=
+
+# Curl TIMEOUT for firewall, in seconds
+FW_TIMEOUT=5
+
+# Set to 1 to check firewall certificates
+CHECK_FW_CERT=0
+
+
+[Run Mode 2]
+
+#################### Simple HTTP server configuration RUN_MODE == 2 #########################
+#             WARNING: this is strictly for testing, use at your own risk.                  #
+# A better idea would be to use RUN_MODE 3 and serve the text file using a real web server. #
+#############################################################################################
+
+HTTP_PORT=8081
+
+
+[Run Mode 3]
+
+# Name and path of the list file for run mode 3
+FILE_PATH=/srv/www/doh-hunter/edl
+
+
+[Logging]
+
+# DEBUG|INFO|WARNING|ERROR|CRITICAL
+LOG_LEVEL=WARNING
